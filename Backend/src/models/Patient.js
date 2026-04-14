@@ -1,0 +1,18 @@
+import mongoose from "mongoose";
+
+const patientSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
+  age: Number,
+  gender: String,
+  bloodGroup: String,
+  allergies: [String],
+  chronicDiseases: [String]
+}, { timestamps: true });
+
+const Patient = mongoose.Model("Patient", patientSchema);
+
+export default Patient;

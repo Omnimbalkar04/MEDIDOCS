@@ -1,15 +1,23 @@
 import express from "express";
 import { ENV } from "./lib/env.js";
 import path from "path";
+import { connectDB } from "./lib/db.js";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+
+import authRoutes from "./router/auth.route.js";
 
 const app = express();
 
 const __dirname = path.resolve();
 
+//middleware
+app.use(express.json());
+app.use(cookieParser());
+app.use(cors({origin:ENV.CLIENT_URL,credentials:true}));
 
-app.get("/app", (req, res) => {
-  res.status(200).json({ message: "Welcome to Medidocs" });
-})
+
+app.use("/api/v1/auth", authRoutes)
 
 //make app ready for deployment
 if(ENV.NODE_ENV === "production") {
@@ -19,6 +27,19 @@ if(ENV.NODE_ENV === "production") {
   });
 }
 
-app.listen(ENV.PORT, () => {
-  console.log("Server is running on port", ENV.PORT);
-});
+
+
+const startServer = async () => {
+  
+  try {
+    await connectDB();
+    app.listen(ENV.PORT, () => {
+    console.log(`Server running on port ${ENV.PORT}`);
+  
+  });
+  } catch (error) {
+    console.error("Server connection failed",error);
+  }
+};
+
+startServer();
