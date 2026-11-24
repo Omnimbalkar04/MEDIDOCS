@@ -19,6 +19,6 @@ const billingSchema = new mongoose.Schema({
   paymentMethod: String
 },{timestamps:true});
 
-const Billing = mongoose.Model("Billing", billingSchema);
+const Billing = mongoose.model("Billing", billingSchema);
 
 export default Billing;

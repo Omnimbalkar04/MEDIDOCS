@@ -13,6 +13,6 @@ const patientSchema = new mongoose.Schema({
   chronicDiseases: [String]
 }, { timestamps: true });
 
-const Patient = mongoose.Model("Patient", patientSchema);
+const Patient = mongoose.model("Patient", patientSchema);
 
 export default Patient;

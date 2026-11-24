@@ -7,8 +7,7 @@ const doctorSchema = new mongoose.Schema({
     required: true
   },
   specialization:{
-    type: String,
-    required: true
+    type: String
   },
   experience:{
     type: Number,
@@ -21,22 +20,19 @@ const doctorSchema = new mongoose.Schema({
   },
   licenseNumber: {
     type: String,
-    required: true,
-    unique: true
+    unique: true,
+    sparse: true
+  
   },
-  availaibility: [
-    {
-      day: String,
-      startTime: String,
-      endTime: String
-    }
-  ],
-  isApproved: {
-    type: Boolean,
-    default: false
+  availaibility: String,
+
+  approvalStatus:{
+    type: String,
+    enum: ["PENDING", "APPROVED", "REJECTED"],
+    default: "PENDING"
   }
 }, { timestamps: true });
 
-const Doctor = mongoose.Model("Doctor", doctorSchema );
+const Doctor = mongoose.model("Doctor", doctorSchema );
 
 export default Doctor;

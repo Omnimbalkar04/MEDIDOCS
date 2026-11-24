@@ -33,7 +33,7 @@ export async function signup(req, res) {
     let userRole = "PATIENT";
 
     // Role Handling
-    if (req.body.isDoctor === true) {
+    if (req.body.role === "DOCTOR") {
       userRole = "DOCTOR";
     }
 
@@ -51,6 +51,7 @@ export async function signup(req, res) {
       name,
       password,
       role: userRole,
+      isApproved: userRole === "DOCTOR" ? false : true
     });
 
     const token = jwt.sign(
@@ -110,7 +111,7 @@ export async function login(req, res) {
     if (user.role === "DOCTOR") {
       const doctor = await Doctor.findOne({ userId: user._id });
 
-      if (!doctor || !doctor.isApproved) {
+      if (!doctor || doctor.approvalStatus !== "APPROVED" ) {
         return res.status(400).json({ message: "Doctor not approved yet" });
       }
     }
@@ -134,4 +135,10 @@ export async function login(req, res) {
   }
 }
 
-export async function onboard(req, res) {}
+export async function logout(req, res) {
+   res.clearCookie("jwt");
+      res.status(200).json({ success: true, message: "Logout successful"});
+}
+
+
+

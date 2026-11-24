@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js"
 import { ENV } from "../lib/env.js";
-import User from "../models/User.js";
 
-export async function protectedRoute(req, res, next) {
+
+export const protectedRoute = async (req, res, next) =>  {
 
   try {
       const token = req.cookies.jwt;
@@ -26,11 +26,21 @@ export async function protectedRoute(req, res, next) {
 
       req.user = user;
  
-      next();
+      next()
 
   } catch (error) {
     console.log("Error in protectRoute middleware", error);
     return res.status(500).json({ message: "Internal Server Error" });
 
   }
+}
+
+export const authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if(!roles.includes(req.user.role)){
+      return res.status(403).json({ message: "Access denied" })
+    }
+    next()
+  }
+
 }

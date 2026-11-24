@@ -21,6 +21,6 @@ const medicalRecordsSchema = new mongoose.Schema({
   attachments: [String]
 }, {timestamps: true});
 
-const Records = mongoose.Model("Records", medicalRecordsSchema);
+const Records = mongoose.model("Records", medicalRecordsSchema);
 
 export default Records;
