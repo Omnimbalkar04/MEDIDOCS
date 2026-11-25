@@ -11,7 +11,7 @@ router.get("/patient", protectedRoute, authorizeRoles("PATIENT"), getPatientAppo
 
 router.get("/doctor", protectedRoute, authorizeRoles("DOCTOR"), getDoctorAppointments);
 
-router.patch("/cancel/:id", protectedRoute, authorizeRoles("DOCTOR"), cancelAppointment);
+router.patch("/cancel/:id", protectedRoute, authorizeRoles("DOCTOR", "PATIENT"), cancelAppointment);
 
 router.patch("/complete/:id", protectedRoute, authorizeRoles("DOCTOR"), completeAppointment);
 

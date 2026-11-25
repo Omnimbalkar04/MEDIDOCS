@@ -18,33 +18,35 @@ import DoctorDashboard from "./pages/DoctorDashboard.jsx";
 import Doctors from "./components/Doctors.jsx";
 import DoctorProfile from "./pages/DoctorProfile.jsx";
 import DoctorAppointments from "./pages/DoctorAppointments.jsx";
+import MyAppointments from "./pages/MyAppointments.jsx";
+import AppointmentDetails from "./pages/AppointmentDetails.jsx";
 
 
 function App() {
 
   const { isLoading, authUser } = useAuthUser();
 
-    const isAuthenticated = Boolean(authUser);
+  const isAuthenticated = Boolean(authUser);
   const isOnboarded = authUser?.isOnboarded;
 
 
   if (isLoading) return <PageLoader />;
-  
+
   return (
     <div className="h-screen bg-base-200 " >
-    <Routes>
-      <Route path="/"
+      <Routes>
+        <Route path="/"
           element={
             isAuthenticated && isOnboarded && authUser.role === "PATIENT" && authUser?.isApproved ? (
-               <Layout showSidebar={true}>
+              <Layout showSidebar={true}>
                 <HomePage />
               </Layout>
             ) : (
-              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" ? !authUser.isApproved ? "/doctor/pending" : "/doctor/dashboard"  : authUser.role === "PATIENT" ? "/onboardingPatient" : "/admin"} />
+              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" ? !authUser.isApproved ? "/doctor/pending" : "/doctor/dashboard" : authUser.role === "PATIENT" ? "/onboardingPatient" : "/admin"} />
             )
           }
-           />
-      <Route path="/signup"
+        />
+        <Route path="/signup"
           element={
             !isAuthenticated ? (
               <SignUpPage />
@@ -52,7 +54,7 @@ function App() {
               <Navigate to={authUser.role === "DOCTOR" ? !isOnboarded ? "/onboardingDoctor" : !authUser.isApproved ? "/doctor/pending" : "/doctor/dashboard" : authUser.role === "PATIENT" ? !isOnboarded ? "/onboardingPatient" : "/" : "/admin"} />
             )
           } />
-      <Route path="/login"
+        <Route path="/login"
           element={
             !isAuthenticated ? (
               <LoginPage />
@@ -60,7 +62,7 @@ function App() {
               <Navigate to={authUser.role === "DOCTOR" ? !isOnboarded ? "/onboardingDoctor" : !authUser.isApproved ? "/doctor/pending" : "/doctor/dashboard" : authUser.role === "PATIENT" ? !isOnboarded ? "/onboardingPatient" : "/" : "/admin"} />
             )
           } />
-      <Route path="/onboardingPatient"
+        <Route path="/onboardingPatient"
           element={
             isAuthenticated ? (
               authUser.role === "PATIENT" ? (
@@ -77,14 +79,14 @@ function App() {
             )
           } />
 
-          <Route path="/onboardingDoctor"
+        <Route path="/onboardingDoctor"
           element={
             isAuthenticated ? (
               authUser.role === "DOCTOR" ? (
                 !isOnboarded ? (
                   <OnboardingDoctor />
                 ) : (
-                  authUser?.isApproved ?(
+                  authUser?.isApproved ? (
                     <Navigate to="/doctor/dashboard" />
                   ) : (
                     <Navigate to="/doctor/pending" />
@@ -98,82 +100,139 @@ function App() {
             )
           } />
 
-          <Route path="/doctor/pending"
+        <Route path="/doctor/pending"
           element={
             isAuthenticated && isOnboarded && authUser.role === "DOCTOR" && !authUser?.isApproved ? (
-               <Layout showSidebar={true}>
+              <Layout showSidebar={true}>
                 <PendingApprovalPage />
               </Layout>
             ) : (
-              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" && authUser?.isApproved ? "/doctor/dashboard" :  "/onboardingDoctor"} />
+              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" && authUser?.isApproved ? "/doctor/dashboard" : "/onboardingDoctor"} />
             )
           }
-           />
+        />
 
-           <Route path="/admin" 
-           element={
+        <Route path="/admin"
+          element={
             isAuthenticated && authUser.role === "ADMIN" ? (
               <Layout showSidebar={true}>
                 <AdminDashboard />
               </Layout>
             ) : (
-              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" && authUser?.isApproved ? "/doctor" :  "/onboardingDoctor"} />
+              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" && authUser?.isApproved ? "/doctor" : "/onboardingDoctor"} />
             )
-           }
-            />
+          }
+        />
 
-            
-          <Route path="/doctor/dashboard"
+
+        <Route path="/doctor/dashboard"
           element={
             isAuthenticated && isOnboarded && authUser.role === "DOCTOR" && authUser?.isApproved ? (
-               <Layout showSidebar={true}>
+              <Layout showSidebar={true}>
                 <DoctorDashboard />
               </Layout>
             ) : (
-              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" && !authUser?.isApproved ? "/doctor/pending" :  "/onboardingDoctor"} />
+              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" && !authUser?.isApproved ? "/doctor/pending" : "/onboardingDoctor"} />
             )
           }
-           />
+        />
 
-           <Route path="/doctor/approved"
+        <Route path="/doctor/approved"
           element={
             isAuthenticated && isOnboarded && authUser ? (
-               <Layout showSidebar={true}>
+              <Layout showSidebar={true}>
                 <Doctors />
               </Layout>
             ) : (
-              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" ? !authUser.isApproved ? "/doctor/pending" : "/doctor/dashboard"  : authUser.role === "PATIENT" ? "/onboardingPatient" : "/admin"} />
+              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" ? !authUser.isApproved ? "/doctor/pending" : "/doctor/dashboard" : authUser.role === "PATIENT" ? "/onboardingPatient" : "/admin"} />
             )
           }
-           />
+        />
 
-           <Route path="/doctor/:id"
+        <Route path="/doctor/:id"
           element={
             isAuthenticated && isOnboarded && authUser?.isApproved ? (
-               <Layout showSidebar={true}>
+              <Layout showSidebar={true}>
                 <DoctorProfile />
               </Layout>
             ) : (
-              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" ? !authUser.isApproved ? "/doctor/pending" : "/doctor/dashboard"  : authUser.role === "PATIENT" ? "/onboardingPatient" : "/admin"} />
+              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" ? !authUser.isApproved ? "/doctor/pending" : "/doctor/dashboard" : authUser.role === "PATIENT" ? "/onboardingPatient" : "/admin"} />
             )
           }
-           />
+        />
 
-            <Route path="/appointments/doctor"
+        <Route path="/appointments/doctor"
           element={
             isAuthenticated && isOnboarded && authUser.role === "DOCTOR" && authUser?.isApproved ? (
-               <Layout showSidebar={true}>
+              <Layout showSidebar={true}>
                 <DoctorAppointments />
               </Layout>
             ) : (
-              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" && !authUser?.isApproved ? "/doctor/pending" :  "/onboardingDoctor"} />
+              <Navigate to={!isAuthenticated ? "/login" : authUser.role === "DOCTOR" && !authUser?.isApproved ? "/doctor/pending" : "/onboardingDoctor"} />
             )
           }
-           />
+        />
 
-    </Routes>
+        <Route
+          path="/appointments"
+          element={
+            isAuthenticated &&
+              isOnboarded &&
+              authUser.role === "PATIENT" &&
+              authUser?.isApproved ? (
+              <Layout showSidebar={true}>
+                <MyAppointments />
+              </Layout>
+            ) : (
+              <Navigate
+                to={
+                  !isAuthenticated
+                    ? "/login"
+                    : authUser.role === "PATIENT"
+                      ? "/onboardingPatient"
+                      : authUser.role === "DOCTOR"
+                        ? authUser.isApproved
+                          ? "/doctor/dashboard"
+                          : "/doctor/pending"
+                        : "/admin"
+                }
+              />
+            )
+          }
+        />
 
-    <Toaster />
+
+        <Route
+  path="/appointments/:id"
+  element={
+    isAuthenticated &&
+    isOnboarded &&
+    authUser.role === "PATIENT" &&
+    authUser?.isApproved ? (
+      <Layout showSidebar={true}>
+        <AppointmentDetails />
+      </Layout>
+    ) : (
+      <Navigate
+        to={
+          !isAuthenticated
+            ? "/login"
+            : authUser.role === "PATIENT"
+            ? "/onboardingPatient"
+            : authUser.role === "DOCTOR"
+            ? authUser.isApproved
+              ? "/doctor/dashboard"
+              : "/doctor/pending"
+            : "/admin"
+        }
+      />
+    )
+  }
+/>
+
+      </Routes>
+
+      <Toaster />
     </div>
   )
 }

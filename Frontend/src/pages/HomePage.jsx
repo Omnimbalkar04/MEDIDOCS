@@ -39,29 +39,29 @@ const HomePage = () => {
 
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-         <p className="text-sm font-medium text-blue-600">Patient Dashboard</p>
+          <p className="text-sm font-medium text-blue-600">Patient Dashboard</p>
 
-         <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-          Good Evening
-         </h1>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            Good Evening
+          </h1>
 
-         <p className="mt-1 text-sm text-slate-500 sm:text-base">
-          Here's your health and appointment overview
-         </p>
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
+            Here's your health and appointment overview
+          </p>
         </div>
 
         <Link to="/doctor/approved" className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 hover:shadow-md">
           <Search size={18} />
           Find a Doctor
-          </Link>
+        </Link>
 
-          {/* UPCOMING APPOINTMENT */}
+        {/* UPCOMING APPOINTMENT */}
 
         <div className="overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white shadow-lg sm:p-7">
           <div className="flex flex-col gap-6  lg:flex-row lg:items-center lg:justify-between">
             <div>
               <div className="mb-3 flex items-center gap-2 text-sm font-medium text-blue-100">
-                <Calendar size={18} /> 
+                <Calendar size={18} />
                 UPCOMING APPOINTMNET
               </div>
 
@@ -75,21 +75,23 @@ const HomePage = () => {
               <div className="mt-5 flex flex-wrap gap-3">
 
                 <div className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-sm backdrop-blur-sm">
-                <Calendar size={16} /> {nextAppointment ? new Date(nextAppointment.date).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year:"numeric",
-                }) : "No date"}
+                  <Calendar size={16} /> {nextAppointment ? new Date(nextAppointment.date).toLocaleDateString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  }) : "No date"}
                 </div>
 
                 <div className="flex items-center gap-2 rounded-lg bg-white/10 px-3 py-2 text-sm backdrop-blur-sm">
-                <Clock3 size={16} /> {nextAppointment?.time || "No time"}
+                  <Clock3 size={16} /> {nextAppointment?.time || "No time"}
                 </div>
               </div>
             </div>
 
-                        <Link
-              to="/appointments"
+            <Link
+              to={nextAppointment
+                ? `/appointments/${nextAppointment._id}`
+                : "/appointments"}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-blue-600 transition hover:bg-blue-50"
             >
               View Appointment
@@ -218,79 +220,82 @@ const HomePage = () => {
 
               {appointments.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center">
-                 <Calendar size={32} className='mx-auto text-slate-400' /> 
-                 <p className="mt-3 font-semibold text-slate-700">No appointments yet</p>
-                 <p className="mt-1 text-sm text-slate-500 ">
-                  Book an appointment with one of our approved doctors
-                 </p>
-                <Link to="/doctor/approved" className='mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700' >Find a Doctor 
-                <ChevronRight size={16} />
-                </Link>
+                  <Calendar size={32} className='mx-auto text-slate-400' />
+                  <p className="mt-3 font-semibold text-slate-700">No appointments yet</p>
+                  <p className="mt-1 text-sm text-slate-500 ">
+                    Book an appointment with one of our approved doctors
+                  </p>
+                  <Link to="/doctor/approved" className='mt-4 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700' >Find a Doctor
+                    <ChevronRight size={16} />
+                  </Link>
                 </div>
               ) : (
                 appointments.map((appointment) => (
-                   <div className="flex flex-col gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4 transition hover:border-slate-200 hover:shadow-sm sm:flex-row sm:items-center sm:justify-between">
+                  <div
+
+                    key={appointment._id}
+                    className="flex flex-col gap-4 rounded-xl border border-slate-100 bg-slate-50 p-4 transition hover:border-slate-200 hover:shadow-sm sm:flex-row sm:items-center sm:justify-between">
 
                     {/* Doctor */}
 
-                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4">
 
-                  <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                    <Stethoscope size={20} />
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+                        <Stethoscope size={20} />
+                      </div>
+
+                      <div>
+                        <h3 className="font-semibold text-slate-900">
+                          Dr.{" "} {appointment.doctorId?.userId?.name || "Unknown Doctor"}
+                        </h3>
+
+                        <p className="text-sm text-slate-500">
+                          {appointment.doctorId?.specialization || "Medical Specialist"}
+                        </p>
+                      </div>
+
+                    </div>
+
+                    {/* Date + Status */}
+
+                    <div className="flex flex-wrap items-center gap-3">
+
+                      <div className="text-sm text-slate-500">
+                        {new Date(appointment.date).toLocaleDateString(
+                          "en-IN",
+                          {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric"
+                          }
+                        )}
+                      </div>
+
+                      {appointment.status === "BOOKED" && (
+                        <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                          BOOKED
+                        </span>
+                      )}
+
+                      {appointment.status === "COMPLETED" && (
+                        <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                          COMPLETED
+                        </span>
+                      )}
+
+                      {appointment.status === "CANCELLED" && (
+                        <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                          CANCELLED
+                        </span>
+                      )}
+
+
+
+                    </div>
+
                   </div>
+                ))
 
-                  <div>
-                    <h3 className="font-semibold text-slate-900">
-                      Dr.{" "} {appointment.doctorId?.userId?.name || "Unknown Doctor"}
-                    </h3>
-
-                    <p className="text-sm text-slate-500">
-                      {appointment.doctorId?.specialization || "Medical Specialist"}
-                    </p>
-                  </div>
-
-                </div>
-
-                {/* Date + Status */}
-
-                <div className="flex flex-wrap items-center gap-3">
-
-                  <div className="text-sm text-slate-500">
-                    {new Date(appointment.date).toLocaleDateString(
-                      "en-IN",
-                      {
-                        day: "2-digit",
-                        month: "short",
-                        year:"numeric"
-                      }
-                    )}
-                  </div>
-
-                  {appointment.status === "BOOKED" && (
-                    <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                    BOOKED
-                  </span>
-                  )}
-
-                  {appointment.status === "COMPLETED" && (
-                    <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                    COMPLETED
-                  </span>
-                  )}
-
-                  {appointment.status === "CANCELLED" && (
-                    <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                    CANCELLED
-                  </span>
-                  )}
-
-                  
-
-                </div>
-
-              </div>
-                ) )
-                
               )}
 
 

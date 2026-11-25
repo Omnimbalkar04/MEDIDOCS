@@ -126,10 +126,16 @@ export async function getDoctorAppointments(req, res){
 }
 
 export async function cancelAppointment(req, res){
+
+   console.log("🔥 cancelAppointment controller reached");
   try {
     const { id } = req.params;
 
     const appointment = await Appointment.findById(id);
+
+    const patient = await Patient.findOne({
+      userId: req.user._id
+    });
 
     const doctor = await Doctor.findOne({ userId: req.user._id });
 
@@ -137,11 +143,22 @@ export async function cancelAppointment(req, res){
       return res.status(404).json({ message: "Appointment not found" });
     }
 
+
+
+        // Check ownership
+    const isPatient =
+      patient &&
+      appointment.patientId.toString() === patient._id.toString();
+
+    const isDoctor =
+      doctor &&
+      appointment.doctorId.toString() === doctor._id.toString();
+
     //security check
 
-    const isPatient = appointment.patientId.toString() === req.user._id.toString();
+    // const isPatient = appointment.patientId.toString() === req.user._id.toString();
 
-    const isDoctor = doctor._id.toString() === appointment.doctorId.toString();
+    // const isDoctor = doctor._id.toString() === appointment.doctorId.toString();
 
     if(!isPatient && !isDoctor){
       return res.status(403).json({ message: "Unauthorized" });
