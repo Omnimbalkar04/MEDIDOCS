@@ -58,6 +58,11 @@ export async function getDoctorProfile() {
   return res.data;
 }
 
+export async function updateDoctorProfile(data) {
+  const res = await axiosInstance.patch("/doctor/profile", data);
+  return res.data;
+}
+
 export async function getApprovedDoctors() {
   const res = await axiosInstance.get("/doctor/approved");
   return res.data;

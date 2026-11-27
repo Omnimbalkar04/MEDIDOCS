@@ -20,6 +20,7 @@ import DoctorProfile from "./pages/DoctorProfile.jsx";
 import DoctorAppointments from "./pages/DoctorAppointments.jsx";
 import MyAppointments from "./pages/MyAppointments.jsx";
 import AppointmentDetails from "./pages/AppointmentDetails.jsx";
+import DoctorMyProfile from "./pages/DoctorMyProfile.jsx";
 
 
 function App() {
@@ -136,6 +137,30 @@ function App() {
             )
           }
         />
+
+        <Route
+  path="/doctor/my-profile"
+  element={
+    isAuthenticated &&
+    isOnboarded &&
+    authUser.role === "DOCTOR" &&
+    authUser.isApproved ? (
+      <Layout showSidebar={true}>
+        <DoctorMyProfile />
+      </Layout>
+    ) : (
+      <Navigate
+        to={
+          !isAuthenticated
+            ? "/login"
+            : authUser.role === "DOCTOR" && !authUser.isApproved
+            ? "/doctor/pending"
+            : "/onboardingDoctor"
+        }
+      />
+    )
+  }
+/>
 
         <Route path="/doctor/approved"
           element={

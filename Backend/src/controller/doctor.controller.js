@@ -122,3 +122,120 @@ export async function getDoctorById(req, res){
     res.status(500).json({ message: "Internal server Error" });
   }
 }
+
+
+
+export async function updateDoctorProfile(req, res) {
+  try {
+    const doctor = await Doctor.findOne({
+      userId: req.user._id,
+    });
+
+    if (!doctor) {
+      return res.status(404).json({
+        success: false,
+        message: "Doctor profile not found",
+      });
+    }
+
+    const allowedFields = [
+      "specialization",
+      "experience",
+      "fees",
+      "availaibility",
+    ];
+
+    const updates = {};
+
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        updates[field] = req.body[field];
+      }
+    }
+
+    if (Object.keys(updates).length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid fields provided for update",
+      });
+    }
+
+    // Validate specialization
+    if (updates.specialization !== undefined) {
+      if (
+        typeof updates.specialization !== "string" ||
+        !updates.specialization.trim()
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide a valid specialization",
+        });
+      }
+
+      updates.specialization = updates.specialization.trim();
+    }
+
+    // Validate experience
+    if (updates.experience !== undefined) {
+      const experience = Number(updates.experience);
+
+      if (!Number.isFinite(experience) || experience < 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Experience must be a valid non-negative number",
+        });
+      }
+
+      updates.experience = experience;
+    }
+
+    // Validate consultation fees
+    if (updates.fees !== undefined) {
+      const fees = Number(updates.fees);
+
+      if (!Number.isFinite(fees) || fees < 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Consultation fee must be a valid non-negative number",
+        });
+      }
+
+      updates.fees = fees;
+    }
+
+    // Validate availability
+    if (updates.availaibility !== undefined) {
+      if (
+        typeof updates.availaibility !== "string" ||
+        !updates.availaibility.trim()
+      ) {
+        return res.status(400).json({
+          success: false,
+          message: "Please provide valid availability information",
+        });
+      }
+
+      updates.availaibility = updates.availaibility.trim();
+    }
+
+    Object.assign(doctor, updates);
+
+    await doctor.save();
+
+    await doctor.populate("userId", "name email");
+
+    return res.status(200).json({
+      success: true,
+      message: "Doctor profile updated successfully",
+      doctor,
+    });
+
+  } catch (error) {
+    console.log("Error in updateDoctorProfile controller:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}

@@ -1,7 +1,7 @@
 
 import express from "express";
 import { authorizeRoles, protectedRoute } from "../middleware/auth.middleware.js";
-import { getApprovedDoctors, getDoctorById, getDoctorProfile, onboardDoctor } from "../controller/doctor.controller.js";
+import { getApprovedDoctors, getDoctorById, getDoctorProfile, onboardDoctor, updateDoctorProfile } from "../controller/doctor.controller.js";
 
 
 
@@ -11,8 +11,19 @@ router.post("/onboardingDoctor", protectedRoute, authorizeRoles("DOCTOR"), onboa
 
 router.get("/approved", getApprovedDoctors);
 
-router.get("/profile",protectedRoute,authorizeRoles("DOCTOR"),getDoctorProfile);
+router.get("/profile", protectedRoute, authorizeRoles("DOCTOR"), getDoctorProfile);
+
+router.patch(
+    "/profile",
+    protectedRoute,
+    authorizeRoles("DOCTOR"),
+    updateDoctorProfile
+);
+
 
 router.get("/:id", protectedRoute, getDoctorById);
+
+
+
 
 export default router;
