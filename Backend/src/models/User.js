@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      require: true,
+      required: true,
       trim: true
     },
     email: {
@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
     isApproved: {
       type: Boolean,
       default: function () {
-        return this.role === "PATIENT" || "ADMIN"
+        return this.role === "PATIENT" || this.role === "ADMIN";
       }
     }
 

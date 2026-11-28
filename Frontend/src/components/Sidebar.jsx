@@ -1,7 +1,7 @@
 import React from 'react'
 import useAuthUser from '../hooks/useAuthUser'
 import { Link, useLocation } from 'react-router';
-import { BellIcon, HomeIcon, PersonStandingIcon, ShipWheelIcon, Stethoscope, UserIcon } from 'lucide-react';
+import { BellIcon, CalendarDays, HomeIcon, PersonStandingIcon, ShipWheelIcon, Stethoscope, UserIcon } from 'lucide-react';
 
 const Sidebar = () => {
   const { authUser } = useAuthUser();
@@ -39,49 +39,113 @@ const Sidebar = () => {
       </div>
     </div>
 
-    {/* NAVIGATION */}
 
+
+    {/* NAVIGATION */}
     <nav className="flex-1 px-4 mt-6 space-y-2">
-      {authUser?.role === "DOCTOR" && (
-        <Link to="/doctor/dashboard" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/doctors" ? "btn-active" : ""}`}>
-          <PersonStandingIcon className='size-5 text-base-content opacity-70' />
-          <span >Doctor</span>
-        </Link>
+
+      {/* PATIENT NAVIGATION */}
+      {authUser?.role === "PATIENT" && (
+        <>
+          <Link
+            to="/"
+            className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/" ? "btn-active" : ""
+              }`}
+          >
+            <HomeIcon className="size-5" />
+            <span>Home</span>
+          </Link>
+
+          <Link
+            to="/doctor/approved"
+            className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/doctor/approved" ? "btn-active" : ""
+              }`}
+          >
+            <Stethoscope className="size-5" />
+            <span>Find Doctors</span>
+          </Link>
+        </>
       )}
 
-      {authUser?.role != "DOCTOR" && (<Link to="/" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/" ? "btn-active" : ""}`}>
-        <HomeIcon className='size-5 text-base-content opacity-70' />
-        <span >Home</span>
-      </Link>)}
+      {/* DOCTOR NAVIGATION */}
+      {authUser?.role === "DOCTOR" && (
+        <>
+          <Link
+            to="/doctor/dashboard"
+            className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/doctor/dashboard" ? "btn-active" : ""
+              }`}
+          >
+            <HomeIcon className="size-5" />
+            <span>Dashboard</span>
+          </Link>
 
-      <Link
-        to={authUser?.role === "DOCTOR" ? "/doctor/my-profile" : "/"}
-        className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/doctor/my-profile" ? "btn-active" : ""
-          }`}
-      >
-        <UserIcon className="size-5 text-base-content opacity-70" />
-        <span>My Profile</span>
-      </Link>
+          <Link
+            to="/doctor/my-profile"
+            className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/doctor/my-profile" ? "btn-active" : ""
+              }`}
+          >
+            <UserIcon className="size-5" />
+            <span>My Profile</span>
+          </Link>
 
+          <Link
+            to="/appointments/doctor"
+            className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/appointments/doctor" ? "btn-active" : ""
+              }`}
+          >
+            <BellIcon className="size-5" />
+            <span>My Appointments</span>
+          </Link>
+        </>
+      )}
+
+      {/* ADMIN NAVIGATION */}
       {authUser?.role === "ADMIN" && (
-        <Link to="/admin" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/admin" ? "btn-active" : ""}`}>
-          <UserIcon className='size-5 text-base-content opacity-70' />
-          <span >Admin Panel</span>
-        </Link>
-      )
-      }
+        <>
+          <Link
+            to="/admin"
+            className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/admin" ? "btn-active" : ""
+              }`}
+          >
+            <HomeIcon className="size-5" />
+            <span>Admin Dashboard</span>
+          </Link>
 
-      <Link to="/doctor/approved" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/doctor/approved" ? "btn-active" : ""}`}>
-        <BellIcon className='size-5 text-base-content opacity-70' />
-        <span >Find Doctors</span>
-      </Link>
+          <Link
+            to="/admin/doctors"
+            className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/admin/doctors" ? "btn-active" : ""
+              }`}
+          >
+            <Stethoscope className="size-5" />
+            <span>Doctor Management</span>
+          </Link>
 
-      {authUser?.role === "DOCTOR" && (<Link to="/appointments/doctor" className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${currentPath === "/doctor/approved" ? "btn-active" : ""}`}>
-        <BellIcon className='size-5 text-base-content opacity-70' />
-        <span >MY Appointments</span>
-      </Link>)}
+          <Link
+            to="/admin/patients"
+            className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${location.pathname === "/admin/patients"
+              ? "bg-primary text-primary-content"
+              : "hover:bg-base-300"
+              }`}
+          >
+            <UserIcon size={20} />
+            <span>Patient Management</span>
+          </Link>
+
+          <Link
+            to="/admin/appointments"
+            className={`btn btn-ghost justify-start w-full gap-3 px-3 normal-case ${location.pathname === "/admin/appointments"
+                ? "bg-primary text-primary-content"
+                : "hover:bg-base-300"
+              }`}
+          >
+            <CalendarDays size={20} />
+            <span>Appointment Management</span>
+          </Link>
+        </>
+      )}
 
     </nav>
+
 
     {/* USER PROFILE SECTION */}
 

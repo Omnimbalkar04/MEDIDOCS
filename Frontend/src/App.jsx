@@ -21,6 +21,9 @@ import DoctorAppointments from "./pages/DoctorAppointments.jsx";
 import MyAppointments from "./pages/MyAppointments.jsx";
 import AppointmentDetails from "./pages/AppointmentDetails.jsx";
 import DoctorMyProfile from "./pages/DoctorMyProfile.jsx";
+import DoctorManagement from "./pages/DoctorManagement.jsx";
+import PatientManagement from "./pages/PatientManagement.jsx";
+import AppointmentManagement from "./pages/AppointmentManagement.jsx";
 
 
 function App() {
@@ -251,6 +254,45 @@ function App() {
             : "/admin"
         }
       />
+    )
+  }
+/>
+
+<Route
+  path="/admin/doctors"
+  element={
+    isAuthenticated && authUser.role === "ADMIN" ? (
+      <Layout showSidebar={true}>
+        <DoctorManagement />
+      </Layout>
+    ) : (
+      <Navigate to={!isAuthenticated ? "/login" : "/"} />
+    )
+  }
+/>
+
+<Route
+  path="/admin/patients"
+  element={
+    isAuthenticated && authUser.role === "ADMIN" ? (
+      <Layout showSidebar={true}>
+        <PatientManagement />
+      </Layout>
+    ) : (
+      <Navigate to={!isAuthenticated ? "/login" : "/"} />
+    )
+  }
+/>
+
+<Route
+  path="/admin/appointments"
+  element={
+    isAuthenticated && authUser.role === "ADMIN" ? (
+      <Layout showSidebar={true}>
+        <AppointmentManagement />
+      </Layout>
+    ) : (
+      <Navigate to={!isAuthenticated ? "/login" : "/"} />
     )
   }
 />
